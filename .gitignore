@@ -1,1 +1,8 @@
-notebooks/.ipynb_checkpoints
+nohup.out
+cli.py
+config.yaml
+*.ipynb_checkpoints
+__pycache__/
+*egg-info*
+/data
+/models
