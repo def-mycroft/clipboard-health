@@ -78,7 +78,8 @@ def make_it_pretty(d):
 
 def setup_aggregate_data(base_data, make_pretty=True):
     base_data = chi.calc_deficit(base_data)
-    base_data['is_shortfall_day'] = (base_data['staffing_shortfall_score'] > 0).astype(int)
+    base_data['is_shortfall_day'] = \
+        (base_data['staffing_shortfall_score'] > 0).astype(int)
 
     data = {
         'tch':base_data.groupby('provnum')[ch.HOURS_COLS_CTR].sum().sum(axis=1),
@@ -93,8 +94,8 @@ def setup_aggregate_data(base_data, make_pretty=True):
     d['crr'] = d['tch'] / d['th']
 
     cols = ['provname', 'city', 'county_name', 'county_fips', 'state']
-    s = (base_data.drop_duplicates(subset=['provnum']).set_index('provnum')[cols]
-           .sort_values(by=['provname']))
+    s = (base_data.drop_duplicates(subset=['provnum'])
+           .set_index('provnum')[cols].sort_values(by=['provname']))
     d = d.join(s)
 
     # calculate z-score for every key metric by state 
@@ -125,3 +126,4 @@ def setup_aggregate_data(base_data, make_pretty=True):
         d = make_it_pretty(d)
 
     return d
+

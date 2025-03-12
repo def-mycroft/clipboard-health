@@ -46,11 +46,13 @@ def plot_prob_shortfall_day(base_data, dev_path=True):
 
 def prep_prob_shortfall_day(base_data):
     df = calc_deficit(base_data)
-    base_data['is_shortfall_day'] = (base_data['staffing_shortfall_score'] > 0).astype(int)
+    base_data['is_shortfall_day'] = \
+        (base_data['staffing_shortfall_score'] > 0).astype(int)
     d = pd.concat([
         df.groupby('state').count()['date'],
         df.groupby('state')['is_shortfall_day'].sum(),
-    ], axis=1).rename(columns={'date':'n_days', 'is_shortfall_day':'n_shortfall_days'})
+    ], axis=1).rename(columns={'date':'n_days', 
+                               'is_shortfall_day':'n_shortfall_days'})
     d['prob_shortfall_day'] = d['n_shortfall_days'] / d['n_days']
     d = d.reset_index()
 
@@ -101,7 +103,8 @@ def deficit_hours_by_state(base_data, dev_path=True):
 def prep_deficit_hours_by_state(base_data):
     s = base_data.groupby('state')[ch.HOURS_COLS + ['mdscensus']].sum()
     s = calc_deficit(s).reset_index()
-    s['staffing_shortfall_resident_hours'] = s['staffing_shortfall_score'] * s['mdscensus']
+    s['staffing_shortfall_resident_hours'] = \
+        s['staffing_shortfall_score'] * s['mdscensus']
 
     s['hover_text'] = s.apply(
         lambda row: f"State: {row['state']}<br>"
@@ -109,13 +112,12 @@ def prep_deficit_hours_by_state(base_data):
                     f"Staffing Shortfall Score: {row['staffing_shortfall_score']:.3f}<br>",
                     axis=1
     )
-    states_label = ['tx', 'mo', 'in', 'ok', 'nm', 'il', 'oh', 'ga', 'wy',
-                    'ny', 'ks', 'ne', 'va', 'sd']
+    states_label = ['tx', 'mo', 'in', 'ok', 'nm', 'il', 'oh', 'ga', 'wy', 'ny',
+                    'ks', 'ne', 'va', 'sd']
     states_label = [x.upper() for x in states_label]
 
     s['statelab'] = s['state']
     s.loc[~s['state'].isin(states_label), 'statelab'] = ''
-
 
     return s
 
@@ -124,7 +126,8 @@ def calc_deficit(df):
     df['hprd_rn'] = df['hrs_rn'] / df['mdscensus']  
     df['hprd_cna'] = df['hrs_cna'] / df['mdscensus']  
     df['hprd_lpn'] = df['hrs_lpn'] / df['mdscensus']  
-    df['hprd_total'] = (df['hrs_rn'] + df['hrs_cna'] + df['hrs_lpn']) / df['mdscensus']  
+    df['hprd_total'] = (df['hrs_rn'] + df['hrs_cna'] + df['hrs_lpn']) \
+        / df['mdscensus']  
 
     df['hprd_rn_deficit'] = (0.55 - df['hprd_rn']).clip(lower=0)  
     df['hprd_cna_deficit'] = (2.45 - df['hprd_cna']).clip(lower=0)  
