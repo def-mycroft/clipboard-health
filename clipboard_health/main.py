@@ -26,6 +26,7 @@ def load_base_data():
     assert df[BASE_COLS].drop_duplicates().shape[0] / len(df) == 1
 
     df.columns = [x.lower() for x in df.columns]
+    df['date'] = df['workdate']
 
     return df
 

@@ -8,6 +8,15 @@ COLORS = ['#1F7ABE', '#F0C277', '#C48646', '#D80A0C', '#000000', '#0E1B35',
           '#635D70', '#463F1A']
 
 
+def build_images(base_data, dev_path=True):
+    tch_crr_by_state(base_data, dev_path=dev_path)
+    deficit_hours_by_state(base_data, dev_path=dev_path)
+    plot_prob_shortfall_day(base_data, dev_path=dev_path)
+
+    hours_by_role(base_data, dev_path=dev_path)
+    hours_by_state(base_data, dev_path=dev_path)
+
+
 def plot_prob_shortfall_day(base_data, dev_path=True):
     d = prep_prob_shortfall_day(base_data)
     fig = px.scatter(
@@ -23,11 +32,12 @@ def plot_prob_shortfall_day(base_data, dev_path=True):
     )
 
     fig.update_traces(
+        marker=dict(color=COLORS[0]),
         hovertemplate='%{customdata[0]}',
         textposition='top center'
     )
 
-    fig.data[1].line.color = 'red'
+    fig.data[1].line.color = COLORS[1]
 
     write_image(fig, 'prob-shortfall-day', dev_path=dev_path)
 
@@ -77,10 +87,11 @@ def deficit_hours_by_state(base_data, dev_path=True):
         title='Staffing Shortfall Hours',
     )
     fig.update_traces(
+        marker=dict(color=COLORS[0]),
         hovertemplate='%{customdata[0]}',
         textposition='top center'
     )
-    fig.data[1].line.color = 'red'
+    fig.data[1].line.color = COLORS[1]
 
     write_image(fig, 'deficit-by-state', dev_path=dev_path)
 
@@ -124,14 +135,6 @@ def calc_deficit(df):
     return df
 
 
-def build_images(base_data, dev_path=True):
-    hours_by_role(base_data, dev_path=dev_path)
-    hours_by_state(base_data, dev_path=dev_path)
-    tch_crr_by_state(base_data, dev_path=dev_path)
-    plot_prob_shortfall_day(base_data, dev_path=dev_path)
-    deficit_hours_by_state(base_data, dev_path=dev_path)
-
-
 def prep_tch_crr_state_data(base_data, states_label=[]):
     d = prep_hours_by_state(base_data, ctr_hours=True)
     hours_contractor = d.set_index('state').sum(axis=1).rename('hours_ctr')
@@ -167,10 +170,11 @@ def tch_crr_by_state(base_data, dev_path=True):
         title='Total Contractor Hours and Contractor Reliance Rate by State',
     )
     fig.update_traces(
+        marker=dict(color=COLORS[0]),
         hovertemplate='%{customdata[0]}',
         textposition='top center'
     )
-    fig.data[1].line.color = 'red'
+    fig.data[1].line.color = COLORS[1]
 
     write_image(fig, 'tch-crr', dev_path=dev_path)
 
